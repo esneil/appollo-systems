@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Appollo-Systems official website\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-08 01:28+0000\n"
+"PO-Revision-Date: 2018-01-08 01:44+0000\n"
+"Last-Translator: hecky <esneilm@gmail.com>\n"
+"Language-Team: Spanish (Mexico)\n"
+"Language: es-MX\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#. Name of the theme
+msgid "Appollo System official website"
+msgstr "Sitio web oficial de Appollo System"
+
+#. Description of the theme
+msgid "Appollo HTML5 Template for Wordpress"
+msgstr "Plantilla HTML5 de Appollo para Wordpress"
+
+#. URI of the theme
+msgid "http://www.appollo-systems.com"
+msgstr "http://www.appollo-systems.com"
+
+#. Author of the theme
+msgid "appollo-systems"
+msgstr "appollo-systems"
+
+#. Author URI of the theme
+msgid "https://www.appollo-systems.com"
+msgstr "https://www.appollo-systems.com"
+
+msgid "Slide Options"
+msgstr "Opciones del slide"
+
+msgid "Change slider options here."
+msgstr "Cambie las opciones del slide aqui."
+
+msgid "Header Slide First Image"
+msgstr "Primera imagen del slide de cabecera"
+
+msgid "Header Slide Second Image"
+msgstr "Segunda imagen del slide de cabecera"
+
+msgid "Header Slide Third Image"
+msgstr "Tercera imagen del slide de cabecera"
+
+msgid "Page Entries Options"
+msgstr "Opciones de entradas de pagina"
+
+msgid "Change page entries options here."
+msgstr "Cambie las opciones de entradas de pagina aqui."
+
+msgid "Enter page entries tilte here."
+msgstr "Escriba el titulo de las entradas de pagina aqui."
+
+msgid "Header Menu"
+msgstr "Menu de cabecera"
