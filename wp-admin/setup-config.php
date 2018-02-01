@@ -1,9 +1,9 @@
 <?php
 /**
- * Retrieves and creates the wp-config-back.php file.
+ * Retrieves and creates the wp-config.php file.
  *
  * The permissions for the base directory must allow for writing files in order
- * for the wp-config-back.php to be created using this page.
+ * for the wp-config.php to be created using this page.
  *
  * @package WordPress
  * @subpackage Administration
@@ -35,33 +35,41 @@ require( ABSPATH . 'wp-settings.php' );
 /** Load WordPress Administration Upgrade API */
 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-/** Load WordPress Translation Install API */
+/** Load WordPress Translation Installation API */
 require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
 
 nocache_headers();
 
 // Support wp-config-sample.php one level up, for the develop repo.
-if ( file_exists( ABSPATH . 'wp-config-sample.php' ) )
+if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 	$config_file = file( ABSPATH . 'wp-config-sample.php' );
-elseif ( file_exists( dirname( ABSPATH ) . '/wp-config-sample.php' ) )
+} elseif ( file_exists( dirname( ABSPATH ) . '/wp-config-sample.php' ) ) {
 	$config_file = file( dirname( ABSPATH ) . '/wp-config-sample.php' );
-else
-	wp_die( __( 'Sorry, I need a wp-config-sample.php file to work from. Please re-upload this file to your WordPress installation.' ) );
+} else {
+	wp_die( sprintf(
+		/* translators: %s: wp-config-sample.php */
+		__( 'Sorry, I need a %s file to work from. Please re-upload this file to your WordPress installation.' ),
+		'<code>wp-config-sample.php</code>'
+	) );
+}
 
-// Check if wp-config-back.php has been created
-if ( file_exists( ABSPATH . 'wp-config-back.php' ) )
+// Check if wp-config.php has been created
+if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
 	wp_die( '<p>' . sprintf(
-			/* translators: %s: install.php */
-			__( "The file 'wp-config-back.php' already exists. If you need to reset any of the configuration items in this file, please delete it first. You may try <a href='%s'>installing now</a>." ),
+			/* translators: 1: wp-config.php 2: install.php */
+			__( 'The file %1$s already exists. If you need to reset any of the configuration items in this file, please delete it first. You may try <a href="%2$s">installing now</a>.' ),
+			'<code>wp-config.php</code>',
 			'install.php'
 		) . '</p>'
 	);
+}
 
-// Check if wp-config-back.php exists above the root directory but is not part of another install
-if ( @file_exists( ABSPATH . '../wp-config-back.php' ) && ! @file_exists( ABSPATH . '../wp-settings.php' ) ) {
+// Check if wp-config.php exists above the root directory but is not part of another installation
+if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '../wp-settings.php' ) ) {
 	wp_die( '<p>' . sprintf(
-			/* translators: %s: install.php */
-			__( "The file 'wp-config-back.php' already exists one level above your WordPress installation. If you need to reset any of the configuration items in this file, please delete it first. You may try <a href='%s'>installing now</a>." ),
+			/* translators: 1: wp-config.php 2: install.php */
+			__( 'The file %1$s already exists one level above your WordPress installation. If you need to reset any of the configuration items in this file, please delete it first. You may try <a href="%2$s">installing now</a>.' ),
+			'<code>wp-config.php</code>',
 			'install.php'
 		) . '</p>'
 	);
@@ -70,7 +78,7 @@ if ( @file_exists( ABSPATH . '../wp-config-back.php' ) && ! @file_exists( ABSPAT
 $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
 
 /**
- * Display setup wp-config-back.php file header.
+ * Display setup wp-config.php file header.
  *
  * @ignore
  * @since 2.3.0
@@ -151,16 +159,16 @@ switch($step) {
 	<li><?php _e( 'Table prefix (if you want to run more than one WordPress in a single database)' ); ?></li>
 </ol>
 <p><?php
-	/* translators: %s: wp-config-back.php */
+	/* translators: %s: wp-config.php */
 	printf( __( 'We&#8217;re going to use this information to create a %s file.' ),
-		'<code>wp-config-back.php</code>'
+		'<code>wp-config.php</code>'
 	);
 	?>
 	<strong><?php
-		/* translators: 1: wp-config-sample.php, 2: wp-config-back.php */
+		/* translators: 1: wp-config-sample.php, 2: wp-config.php */
 		printf( __( 'If for any reason this automatic file creation doesn&#8217;t work, don&#8217;t worry. All this does is fill in the database information to a configuration file. You may also simply open %1$s in a text editor, fill in your information, and save it as %2$s.' ),
 			'<code>wp-config-sample.php</code>',
-			'<code>wp-config-back.php</code>'
+			'<code>wp-config.php</code>'
 		);
 	?></strong>
 	<?php
@@ -276,7 +284,9 @@ switch($step) {
 	if ( ! empty( $wpdb->error ) )
 		wp_die( $wpdb->error->get_error_message() . $tryagain_link );
 
+	$errors = $wpdb->hide_errors();
 	$wpdb->query( "SELECT $prefix" );
+	$wpdb->show_errors( $errors );
 	if ( ! $wpdb->last_error ) {
 		// MySQL was able to parse the prefix as a value, which we don't want. Bail.
 		wp_die( __( '<strong>ERROR</strong>: "Table Prefix" is invalid.' ) );
@@ -356,20 +366,20 @@ switch($step) {
 		setup_config_display_header();
 ?>
 <p><?php
-	/* translators: %s: wp-config-back.php */
-	printf( __( 'Sorry, but I can&#8217;t write the %s file.' ), '<code>wp-config-back.php</code>' );
+	/* translators: %s: wp-config.php */
+	printf( __( 'Sorry, but I can&#8217;t write the %s file.' ), '<code>wp-config.php</code>' );
 ?></p>
 <p><?php
-	/* translators: %s: wp-config-back.php */
-	printf( __( 'You can create the %s manually and paste the following text into it.' ), '<code>wp-config-back.php</code>' );
+	/* translators: %s: wp-config.php */
+	printf( __( 'You can create the %s file manually and paste the following text into it.' ), '<code>wp-config.php</code>' );
 ?></p>
 <textarea id="wp-config" cols="98" rows="15" class="code" readonly="readonly"><?php
 		foreach ( $config_file as $line ) {
 			echo htmlentities($line, ENT_COMPAT, 'UTF-8');
 		}
 ?></textarea>
-<p><?php _e( 'After you&#8217;ve done that, click &#8220;Run the install.&#8221;' ); ?></p>
-<p class="step"><a href="<?php echo $install; ?>" class="button button-large"><?php _e( 'Run the install' ); ?></a></p>
+<p><?php _e( 'After you&#8217;ve done that, click &#8220;Run the installation.&#8221;' ); ?></p>
+<p class="step"><a href="<?php echo $install; ?>" class="button button-large"><?php _e( 'Run the installation' ); ?></a></p>
 <script>
 (function(){
 if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
@@ -386,9 +396,9 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 		 * file one level up, which is for the develop repo.
 		 */
 		if ( file_exists( ABSPATH . 'wp-config-sample.php' ) )
-			$path_to_wp_config = ABSPATH . 'wp-config-back.php';
+			$path_to_wp_config = ABSPATH . 'wp-config.php';
 		else
-			$path_to_wp_config = dirname( ABSPATH ) . '/wp-config-back.php';
+			$path_to_wp_config = dirname( ABSPATH ) . '/wp-config.php';
 
 		$handle = fopen( $path_to_wp_config, 'w' );
 		foreach ( $config_file as $line ) {
@@ -401,7 +411,7 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 <h1 class="screen-reader-text"><?php _e( 'Successful database connection' ) ?></h1>
 <p><?php _e( 'All right, sparky! You&#8217;ve made it through this part of the installation. WordPress can now communicate with your database. If you are ready, time now to&hellip;' ); ?></p>
 
-<p class="step"><a href="<?php echo $install; ?>" class="button button-large"><?php _e( 'Run the install' ); ?></a></p>
+<p class="step"><a href="<?php echo $install; ?>" class="button button-large"><?php _e( 'Run the installation' ); ?></a></p>
 <?php
 	endif;
 	break;

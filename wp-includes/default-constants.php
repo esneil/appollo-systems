@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines constants and global variables that can be overridden, generally in wp-config-back.php.
+ * Defines constants and global variables that can be overridden, generally in wp-config.php.
  *
  * @package WordPress
  */
@@ -12,7 +12,8 @@
  *
  * @since 3.0.0
  *
- * @global int $blog_id
+ * @global int    $blog_id    The current site ID.
+ * @global string $wp_version The WordPress version string.
  */
 function wp_initial_constants() {
 	global $blog_id;
@@ -64,11 +65,11 @@ function wp_initial_constants() {
 	if ( !defined('WP_CONTENT_DIR') )
 		define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' ); // no trailing slash, full paths only - WP_CONTENT_URL is defined further down
 
-	// Add define('WP_DEBUG', true); to wp-config-back.php to enable display of notices during development.
+	// Add define('WP_DEBUG', true); to wp-config.php to enable display of notices during development.
 	if ( !defined('WP_DEBUG') )
 		define( 'WP_DEBUG', false );
 
-	// Add define('WP_DEBUG_DISPLAY', null); to wp-config-back.php use the globally configured setting for
+	// Add define('WP_DEBUG_DISPLAY', null); to wp-config.php use the globally configured setting for
 	// display_errors and not force errors to be displayed. Use false to force display_errors off.
 	if ( !defined('WP_DEBUG_DISPLAY') )
 		define( 'WP_DEBUG_DISPLAY', true );
@@ -80,7 +81,7 @@ function wp_initial_constants() {
 	if ( !defined('WP_CACHE') )
 		define('WP_CACHE', false);
 
-	// Add define('SCRIPT_DEBUG', true); to wp-config-back.php to enable loading of non-minified,
+	// Add define('SCRIPT_DEBUG', true); to wp-config.php to enable loading of non-minified,
 	// non-concatenated scripts and stylesheets.
 	if ( ! defined( 'SCRIPT_DEBUG' ) ) {
 		if ( ! empty( $GLOBALS['wp_version'] ) ) {
@@ -349,7 +350,7 @@ function wp_templating_constants() {
 	define('STYLESHEETPATH', get_stylesheet_directory());
 
 	/**
-	 * Slug of the default theme for this install.
+	 * Slug of the default theme for this installation.
 	 * Used as the default theme when installing new sites.
 	 * It will be used as the fallback if the current theme doesn't exist.
 	 *

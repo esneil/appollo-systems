@@ -49,7 +49,7 @@ nocache_headers();
 $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : 0;
 
 /**
- * Display install header.
+ * Display installation header.
  *
  * @since 2.5.0
  *
@@ -86,6 +86,8 @@ function display_header( $body_classes = '' ) {
  * Display installer setup form.
  *
  * @since 2.8.0
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string|null $error
  */
@@ -253,9 +255,9 @@ if ( ! is_string( $wpdb->base_prefix ) || '' === $wpdb->base_prefix ) {
 	die(
 		'<h1>' . __( 'Configuration Error' ) . '</h1>' .
 		'<p>' . sprintf(
-			/* translators: %s: wp-config-back.php */
+			/* translators: %s: wp-config.php */
 			__( 'Your %s file has an empty database table prefix, which is not supported.' ),
-			'<code>wp-config-back.php</code>'
+			'<code>wp-config.php</code>'
 		) . '</p></body></html>'
 	);
 }

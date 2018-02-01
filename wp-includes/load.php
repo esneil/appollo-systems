@@ -273,7 +273,7 @@ function timer_stop( $display = 0, $precision = 3 ) {
  * Set PHP error reporting based on WordPress debug settings.
  *
  * Uses three constants: `WP_DEBUG`, `WP_DEBUG_DISPLAY`, and `WP_DEBUG_LOG`.
- * All three can be defined in wp-config-back.php. By default, `WP_DEBUG` and
+ * All three can be defined in wp-config.php. By default, `WP_DEBUG` and
  * `WP_DEBUG_LOG` are set to false, and `WP_DEBUG_DISPLAY` is set to true.
  *
  * When `WP_DEBUG` is true, all PHP notices are reported. WordPress will also
@@ -342,7 +342,7 @@ function wp_debug_mode() {
  * Set the location of the language directory.
  *
  * To set directory manually, define the `WP_LANG_DIR` constant
- * in wp-config-back.php.
+ * in wp-config.php.
  *
  * If the language directory exists within `WP_CONTENT_DIR`, it
  * is used. Otherwise the language directory is assumed to live
@@ -434,10 +434,10 @@ function wp_set_wpdb_vars() {
 	if ( is_wp_error( $prefix ) ) {
 		wp_load_translations_early();
 		wp_die(
-			/* translators: 1: $table_prefix 2: wp-config-back.php */
+			/* translators: 1: $table_prefix 2: wp-config.php */
 			sprintf( __( '<strong>ERROR</strong>: %1$s in %2$s can only contain numbers, letters, and underscores.' ),
 				'<code>$table_prefix</code>',
-				'<code>wp-config-back.php</code>'
+				'<code>wp-config.php</code>'
 			)
 		);
 	}
@@ -470,6 +470,8 @@ function wp_using_ext_object_cache( $using = null ) {
  *
  * @since 3.0.0
  * @access private
+ *
+ * @global array $wp_filter Stores all of the filters.
  */
 function wp_start_object_cache() {
 	global $wp_filter;
@@ -554,7 +556,7 @@ function wp_not_installed() {
  *
  * The default directory is wp-content/mu-plugins. To change the default
  * directory manually, define `WPMU_PLUGIN_DIR` and `WPMU_PLUGIN_URL`
- * in wp-config-back.php.
+ * in wp-config.php.
  *
  * @since 3.0.0
  * @access private
@@ -584,7 +586,7 @@ function wp_get_mu_plugins() {
  *
  * The default directory is wp-content/plugins. To change the default
  * directory manually, define `WP_PLUGIN_DIR` and `WP_PLUGIN_URL`
- * in wp-config-back.php.
+ * in wp-config.php.
  *
  * @since 3.0.0
  * @access private
@@ -1012,6 +1014,8 @@ function wp_convert_hr_to_bytes( $value ) {
  *
  * @since 4.6.0
  *
+ * @staticvar array $ini_all
+ *
  * @link https://secure.php.net/manual/en/function.ini-get-all.php
  *
  * @param string $setting The name of the ini setting to check.
@@ -1109,4 +1113,47 @@ function wp_is_file_mod_allowed( $context ) {
 	 * @param string $context          The usage context.
 	 */
 	return apply_filters( 'file_mod_allowed', ! defined( 'DISALLOW_FILE_MODS' ) || ! DISALLOW_FILE_MODS, $context );
+}
+
+/**
+ * Start scraping edited file errors.
+ *
+ * @since 4.9.0
+ */
+function wp_start_scraping_edited_file_errors() {
+	if ( ! isset( $_REQUEST['wp_scrape_key'] ) || ! isset( $_REQUEST['wp_scrape_nonce'] ) ) {
+		return;
+	}
+	$key = substr( sanitize_key( wp_unslash( $_REQUEST['wp_scrape_key'] ) ), 0, 32 );
+	$nonce = wp_unslash( $_REQUEST['wp_scrape_nonce'] );
+
+	if ( get_transient( 'scrape_key_' . $key ) !== $nonce ) {
+		echo "###### wp_scraping_result_start:$key ######";
+		echo wp_json_encode( array(
+			'code' => 'scrape_nonce_failure',
+			'message' => __( 'Scrape nonce check failed. Please try again.' ),
+		) );
+		echo "###### wp_scraping_result_end:$key ######";
+		die();
+	}
+	register_shutdown_function( 'wp_finalize_scraping_edited_file_errors', $key );
+}
+
+/**
+ * Finalize scraping for edited file errors.
+ *
+ * @since 4.9.0
+ *
+ * @param string $scrape_key Scrape key.
+ */
+function wp_finalize_scraping_edited_file_errors( $scrape_key ) {
+	$error = error_get_last();
+	echo "\n###### wp_scraping_result_start:$scrape_key ######\n";
+	if ( ! empty( $error ) && in_array( $error['type'], array( E_CORE_ERROR, E_COMPILE_ERROR, E_ERROR, E_PARSE, E_USER_ERROR, E_RECOVERABLE_ERROR ), true ) ) {
+		$error = str_replace( ABSPATH, '', $error );
+		echo wp_json_encode( $error );
+	} else {
+		echo wp_json_encode( true );
+	}
+	echo "\n###### wp_scraping_result_end:$scrape_key ######\n";
 }
