@@ -1,7 +1,0 @@
-<VirtualHost *:80>
-    ServerAdmin esneilm@yahoo.com
-    DocumentRoot "/var/www/html/"
-    ServerName appollo.systems
-    ErrorLog "logs/appollosystems-error.log"
-    CustomLog "logs/appollosystems-access.log" common
-</VirtualHost>
