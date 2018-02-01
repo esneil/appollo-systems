@@ -6,3 +6,4 @@ services:
     image: php:7.0-apache
     volumes:
      - .:/var/www/html/
+     - appollosystems:/etc/apache2/sites-available/
