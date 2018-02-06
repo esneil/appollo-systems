@@ -20,16 +20,18 @@
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', 'appollo-website');
+define('DB_NAME', 'd2m81v5p04va7j');
 
 /** MySQL database username */
-define('DB_USER', 'hecky');
+define('DB_USER', 'txmubbijoumfqo');
 
 /** MySQL database password */
-define('DB_PASSWORD', 'tissca');
+define('DB_PASSWORD', '63d3e409f3e5f7f0009e255bb8845cb9eb92a787cc11dfdcbc54980e36e7c637');
 
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'ec2-50-19-105-188.compute-1.amazonaws.com');
+
+define('DB_PORT', '5432');
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8mb4');
